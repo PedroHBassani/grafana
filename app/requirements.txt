@@ -1,3 +1,4 @@
 fastapi
 uvicorn[standard] # ASGI server to run FastAPI
 prometheus_client
+psutil

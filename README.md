@@ -93,74 +93,56 @@ Se encontrar problemas ao executar o projeto:
 2. Para ver logs de um serviço específico:
    ```bash
    docker-compose logs app
+   ```
+   ```bash
    docker-compose logs prometheus
+   ```
+   ```bash
    docker-compose logs grafana
    ```
 
 3. Certifique-se de que todas as portas necessárias (8000, 9090, 3000) estão disponíveis no seu sistema.
 
-# Grafana Monitoring System
+## Instruções para Importar o Dashboard
 
-This repository contains a Grafana monitoring dashboard configuration and scripts for monitoring a Python FastAPI application with Prometheus.
+Ao importar o dashboard no Grafana:
 
-## Components
+1. Vá para Dashboards > Import
+2. Faça upload do arquivo JSON ou cole o conteúdo JSON
+3. Selecione a fonte de dados do Prometheus
+4. Clique em Import
 
-- `grafana.json`: Grafana dashboard configuration
-- `app/`: Python FastAPI application with Prometheus metrics
-- `load_test.py`: Script to generate load on the API for testing
+## Usando a Ferramenta de Teste de Carga
 
-## Dashboard Import Instructions
+O script `load_test.py` pode gerar carga artificial na sua API para testar o monitoramento.
 
-When importing the dashboard into Grafana:
+### Uso Básico:
 
-1. Go to Dashboards > Import
-2. Upload the JSON file or paste the JSON content
-3. Select the Prometheus data source
-4. Click Import
-
-## Using the Load Testing Tool
-
-The `load_test.py` script can generate artificial load on your API to test monitoring.
-
-### Basic Usage:
-
+#### Teste com 1000 requisições a 10 requisições por segundo
 ```bash
-# Test with 1000 requests at 10 requests per second
-python ./test/load_test.py --url http://localhost:8000 --requests 1000 --rate 10
-
-# Run a test for 5 minutes (300 seconds)
-python ./test/load_test.py --url http://localhost:8000 --duration 300 --rate 10
-
-# Run with 5 concurrent requests at 20 requests/second
-python ./test/load_test.py --url http://localhost:8000 --duration 60 --rate 20 --concurrent 5
+py ./test/load_test.py --url http://localhost:8000 --requests 1000 --rate 10
 ```
 
-### Parameters:
+#### Execute um teste por 5 minutos (300 segundos)
+```bash
+py ./test/load_test.py --url http://localhost:8000 --duration 300 --rate 10
+```
 
-- `--url`: The API endpoint to test (default: http://localhost:8000)
-- `--requests`: Total number of requests to send
-- `--duration`: How long to run the test in seconds
-- `--rate`: Request rate per second (default: 10)
-- `--concurrent`: Number of concurrent requests (default: 1)
+#### Execute com 5 requisições simultâneas a 20 requisições/segundo
+```bash
+py ./test/load_test.py --url http://localhost:8000 --duration 60 --rate 20 --concurrent 5
+```
 
-Note: You must specify either `--requests` or `--duration`.
+### Parâmetros:
 
-## Handling "Dashboard Changed" Errors
+- `--url`: O endpoint da API a ser testado (padrão: http://localhost:8000)
+- `--requests`: Número total de requisições a serem enviadas
+- `--duration`: Quanto tempo executar o teste em segundos
+- `--rate`: Taxa de requisições por segundo (padrão: 10)
+- `--concurrent`: Número de requisições simultâneas (padrão: 1)
 
-If you encounter a "Failed to save dashboard - The dashboard has been changed by someone else" error:
+Nota: Você deve especificar `--requests` ou `--duration`.
 
-1. **Option 1**: Use the "overwrite" feature
-   - In the dashboard JSON, ensure the "overwrite" property is set to true
-   - This allows the dashboard to override existing versions with the same UID
+## Melhores Práticas
 
-2. **Option 2**: Update the version number
-   - Increment the "version" field in the JSON
-   - This tells Grafana this is a newer version of the dashboard
-
-3. **Option 3**: Use a new UID
-   - Change the "uid" field to a new unique identifier
-   - This will create a new dashboard instead of updating the existing one
-
-## Best Practice
-
-Always pull the latest version of the dashboard before making changes to avoid conflicts.
+Sempre obtenha a versão mais recente do dashboard antes de fazer alterações para evitar conflitos.

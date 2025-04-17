@@ -1,6 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from starlette.responses import Response
-from prometheus_client import Counter, Summary, Gauge, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import Counter, Summary, Gauge, Histogram, generate_latest, CONTENT_TYPE_LATEST
 import time
 import random
 import psutil
@@ -11,6 +11,13 @@ app = FastAPI()
 # Existing metrics
 REQUEST_COUNT = Counter('app_requests_total', 'Total de requisições recebidas')
 REQUEST_TIME = Summary('app_request_processing_seconds', 'Tempo de processamento das requisições')
+
+# Histogram for response time distribution
+REQUEST_DURATION = Histogram(
+    'http_request_duration_seconds', 
+    'Histogram of request processing time (seconds)',
+    buckets=[0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10]
+)
 
 # New CPU and memory metrics
 CPU_PERCENT = Gauge('app_cpu_percent', 'Percentual de uso de CPU pela aplicação')
@@ -44,6 +51,14 @@ def start_metrics_collection():
     # Start metrics collection in a background thread
     thread = threading.Thread(target=collect_metrics, daemon=True)
     thread.start()
+
+@app.middleware("http")
+async def monitor_requests(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    request_time = time.time() - start_time
+    REQUEST_DURATION.observe(request_time)
+    return response
 
 @app.get("/")
 def hello():
