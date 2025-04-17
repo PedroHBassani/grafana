@@ -3,7 +3,8 @@ services:
   app:
     build: ./app
     ports:
-      - "5000:5000"
+      - "8000:8000"
+    container_name: meu_flask_app
   prometheus:
     image: prom/prometheus
     volumes:
