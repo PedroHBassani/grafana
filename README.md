@@ -14,7 +14,10 @@ grafana/
 ├── app/
 │   ├── app.py            # Aplicação FastAPI
 │   ├── Dockerfile        # Dockerfile para a aplicação
-│   └── requirements.txt  # Dependências Python
+│   └── requirements.txt  # Dependências Python - App
+├── test/
+│   └── load_test.py      # Script de teste de carga
+│   └── requirements.txt  # Dependências Python - Test
 ├── docker-compose.yml    # Configuração dos serviços
 ├── prometheus.yml        # Configuração do Prometheus
 └── README.md             # Este arquivo
@@ -60,14 +63,14 @@ grafana/
 1. Acesse o Grafana em [http://localhost:3000](http://localhost:3000)
 2. Faça login com as credenciais padrão (admin/admin)
 3. Configure uma fonte de dados Prometheus:
-   - Vá para Configuração (engrenagem) > Data Sources > Add data source
+   - Vá para Conexões (engrenagem) > Data Sources > Add new data source
    - Selecione "Prometheus"
    - URL: `http://prometheus:9090` - A url funcionará por estar dentro do mesmo container.
    - Clique em "Save & Test"
 
 4. Importe um dashboard:
-   - Vá para Create (ícone +) > Import
-   - Use o ID 10427 para um dashboard FastAPI ou faça upload do JSON do dashboard fornecido
+   - Vá para Dashboards > New > Import
+   - Faça upload do arquivo JSON ou cole o conteúdo JSON
 
 ## Parando os Serviços
 
@@ -80,37 +83,6 @@ Para parar e remover todos os dados (volumes):
 ```bash
 docker-compose down -v
 ```
-
-## Resolução de Problemas
-
-Se encontrar problemas ao executar o projeto:
-
-1. Verifique os logs dos contêineres:
-   ```bash
-   docker-compose logs
-   ```
-
-2. Para ver logs de um serviço específico:
-   ```bash
-   docker-compose logs app
-   ```
-   ```bash
-   docker-compose logs prometheus
-   ```
-   ```bash
-   docker-compose logs grafana
-   ```
-
-3. Certifique-se de que todas as portas necessárias (8000, 9090, 3000) estão disponíveis no seu sistema.
-
-## Instruções para Importar o Dashboard
-
-Ao importar o dashboard no Grafana:
-
-1. Vá para Dashboards > Import
-2. Faça upload do arquivo JSON ou cole o conteúdo JSON
-3. Selecione a fonte de dados do Prometheus
-4. Clique em Import
 
 ## Usando a Ferramenta de Teste de Carga
 
