@@ -28,6 +28,13 @@ MEMORY_PERCENT = Gauge('app_memory_percent', 'Percentual de uso de memória pela
 SYSTEM_CPU_PERCENT = Gauge('system_cpu_percent', 'Percentual de uso de CPU do sistema')
 SYSTEM_MEMORY_PERCENT = Gauge('system_memory_percent', 'Percentual de uso de memória do sistema')
 
+# Add disk usage metrics
+DISK_USAGE_BYTES = Gauge('system_disk_usage_bytes', 'Uso de disco em bytes')
+DISK_FREE_BYTES = Gauge('system_disk_free_bytes', 'Espaço em disco livre em bytes')
+DISK_TOTAL_BYTES = Gauge('system_disk_total_bytes', 'Espaço total em disco em bytes')
+DISK_USAGE_PERCENT = Gauge('system_disk_usage_percent', 'Percentual de uso de disco')
+DISK_FREE_PERCENT = Gauge('system_disk_free_percent', 'Percentual de espaço livre em disco')
+
 def collect_metrics():
     """Background collection of CPU and memory metrics"""
     while True:
@@ -43,6 +50,14 @@ def collect_metrics():
         MEMORY_USAGE.set(mem_info.rss)  # Resident Set Size in bytes
         MEMORY_PERCENT.set(process.memory_percent())
         SYSTEM_MEMORY_PERCENT.set(psutil.virtual_memory().percent)
+
+        # Disk metrics - add disk metrics collection
+        disk = psutil.disk_usage('/')
+        DISK_USAGE_BYTES.set(disk.used)
+        DISK_FREE_BYTES.set(disk.free)
+        DISK_TOTAL_BYTES.set(disk.total)
+        DISK_USAGE_PERCENT.set(disk.percent)
+        DISK_FREE_PERCENT.set(100 - disk.percent)
         
         time.sleep(1)  # Collect every second
 

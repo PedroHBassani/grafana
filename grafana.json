@@ -295,23 +295,23 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "thresholds": {
+            "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+              "color": "red",
+              "value": 10
               },
               {
-                "color": "yellow",
-                "value": 70
+              "color": "yellow",
+              "value": 30
               },
               {
-                "color": "red",
-                "value": 90
+              "color": "green",
+              "value": null
               }
             ]
-          }
+            }
         },
         "overrides": []
       },
@@ -340,14 +340,14 @@
       "pluginVersion": "7.5.0",
       "targets": [
         {
-          "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\",fstype!=\"rootfs\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\",fstype!=\"rootfs\"})",
+          "expr": "system_disk_free_percent",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "Disk Usage",
+          "legendFormat": "Disk Free Percentage",
           "refId": "A"
         }
       ],
-      "title": "Disk Usage",
+      "title": "Disk Free Percentage",
       "type": "stat"
     },
     {
@@ -515,7 +515,7 @@
                 "value": null
               }
             ]
-          },
+          },          
           "unit": "s"
         },
         "overrides": []
